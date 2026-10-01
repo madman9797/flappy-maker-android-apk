@@ -1,0 +1,33 @@
+name: Build Flappy Maker Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Android APK with LÖVE 11.5
+        id: build-love
+        uses: love-actions/love-actions-android@v2
+        with:
+          app-name: "Flappy Maker"
+          bundle-id: "com.brocadegames.flappymaker"
+          love-ref: "11.5"
+          love-package: "./game.love"
+          product-name: "flappy-maker"
+          version-string: "145.0.0"
+          version-code: 145
+          output-folder: "./dist"
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: flappy-maker-android-apk
+          path: ./dist/*.apk
+          if-no-files-found: error
